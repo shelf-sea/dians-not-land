@@ -1,0 +1,25 @@
+stages:
+  not_land:
+    vars:
+      - container:
+          out: /mnt/out
+          tmf: /mnt/in/TRACMASS_run.hdf5
+          ref: /mnt/in/coordref.nc
+      - ../../params.yaml
+    cmd:
+      singularity run --no-home --cleanenv --containall
+        --bind $(realpath $(dvc root)/../..)/${data.hdf5}:${container.out}:rw
+        --bind $(realpath $(dvc root)/../..)/${data.tracmass_hdf5}:${container.tmf}:ro
+        --bind $(realpath $(dvc root)/../..)/${data.coordref}:${container.ref}:ro
+      ../../src/dians-${package_version}.sif create_column
+        --tracmass-hdf5=${container.tmf}
+        --coordref-file=${container.ref}
+        --diagonal=False
+        --column-dst=${container.out}
+        --column=not_land
+    deps:
+      - ../../${data.tracmass_hdf5}
+      - ../../${data.coordref}
+      - ../../src/dians-${package_version}.sif
+    outs:
+      - ../../${data.not_land}
