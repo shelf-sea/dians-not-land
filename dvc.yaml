@@ -1,6 +1,8 @@
 stages:
   not_land:
     vars:
+      - column: not_land
+      - diagonal: False
       - container:
           out: /mnt/out
           tmf: /mnt/in/TRACMASS_run.hdf5
@@ -14,9 +16,9 @@ stages:
       ../../src/dians-${package_version}.sif create_column
         --tracmass-hdf5=${container.tmf}
         --coordref-file=${container.ref}
-        --diagonal=False
+        --diagonal=${diagonal}
         --column-dst=${container.out}
-        --column=not_land
+        --column=${column}
     deps:
       - ../../${data.tracmass_hdf5}
       - ../../${data.coordref}
